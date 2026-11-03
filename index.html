@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+</head>
+<body>
+
+    <h1>Student Management and Results Analysis System</h1>
+    <p>Open the Console to view student reports.</p>
+
+    <script>
+
+        // 1. Create Student Class
+        class Student {
+
+            constructor(id, name, grades, attendance) {
+                this.id = id;
+                this.name = name;
+                this.grades = grades;
+                this.attendance = attendance;
+            }
+
+            // 2. Calculate Average using reduce
+            calculateAverage() {
+                let total = this.grades.reduce(
+                    (sum, grade) => sum + grade, 0
+                );
+
+                return total / this.grades.length;
+            }
+
+            // 3. Calculate Grade
+            getGrade(average) {
+
+                if (average >= 90) {
+                    return "A";
+                } else if (average >= 80) {
+                    return "B";
+                } else if (average >= 70) {
+                    return "C";
+                } else if (average >= 60) {
+                    return "D";
+                } else if (average >= 50) {
+                    return "E";
+                } else {
+                    return "F";
+                }
+            }
+
+            // 4. Calculate Final Result
+            getFinalResult(average) {
+
+                if (average >= 50 && this.attendance >= 75) {
+                    return "Passed";
+                } else {
+                    return "Needs Review";
+                }
+            }
+        }
+
+
+        // 5. Create Students Array
+        let studentsList = [
+
+            new Student(101, "Ahmed", [90, 95, 85], 95),
+
+            new Student(102, "Mona", [45, 48, 42], 90),
+
+            new Student(103, "Sara", [38, 44, 47], 85),
+
+            new Student(104, "Omar", [55, 60, 58], 80)
+
+        ];
+
+
+        // 6. Print All Students Reports
+        console.log("===== Students Reports =====");
+
+        studentsList.forEach(student => {
+
+            let average = student.calculateAverage();
+
+            console.log({
+                ID: student.id,
+                Name: student.name,
+                Average: average.toFixed(2),
+                Grade: student.getGrade(average),
+                Result: student.getFinalResult(average)
+            });
+
+        });
+
+
+        // 7. Filter Struggling Students
+        let strugglingStudents = studentsList.filter(student => {
+
+            let average = student.calculateAverage();
+
+            return average >= 40 && average <= 49;
+
+        });
+
+
+        // 8. Add 5 Mercy Marks using map
+        let mercyStudents = strugglingStudents.map(student => {
+
+            let oldAverage = student.calculateAverage();
+
+            let newAverage = Math.min(oldAverage + 5, 100);
+
+            return {
+                ID: student.id,
+                Name: student.name,
+                OldAverage: oldAverage.toFixed(2),
+                MercyMarks: 5,
+                NewAverage: newAverage.toFixed(2)
+            };
+
+        });
+
+
+        // 9. Calculate Total New Averages using reduce
+        let totalNewAverages = mercyStudents.reduce(
+            (sum, student) => sum + Number(student.NewAverage), 0
+        );
+
+
+        // 10. Calculate Mercy Average
+        // Prevent Division by Zero
+        let mercyAverage = 0;
+
+        if (mercyStudents.length > 0) {
+
+            mercyAverage = totalNewAverages / mercyStudents.length;
+
+        }
+
+
+        // 11. Print Final Results
+        console.log("===== Mercy Committee =====");
+
+        console.table(mercyStudents);
+
+        console.log(
+            "Average After Mercy:",
+            mercyAverage.toFixed(2)
+        );
+
+        console.log(
+            "Number of Struggling Students:",
+            mercyStudents.length
+        );
+
+    </script>
+
+</body>
+</html>
